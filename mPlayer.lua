@@ -1,7 +1,7 @@
 local modem = peripheral.find("modem")
 local speaker = peripheral.find("speaker")
 local dfpwm = require("cc.audio.dfpwm")
-local version = 1.1
+local version = 1.2
 local args = {...}
 if args[1] and tonumber(args[1]) then
   print("Tuning to " .. tonumber(args[1]))
@@ -28,9 +28,9 @@ local latestVersion = textutils.unserialiseJSON(h.readAll()).latestVersion
 
 if latestVersion > version then update() end
 
-
+local args = {...}
 local decoder = dfpwm.make_decoder()
-local selection = 2048
+local selection = tonumber(args[1]) or 2048
 local playing = false
 local song
 local channelName
@@ -111,9 +111,10 @@ local function play()
       local buffer
       if type(msg) == "string" then
         buffer = decoder(msg)
-        signalType = "classic"
+        signalType = "Classic"
       else
-        if msg.protocol == "CCSMB-5" then
+        -- BagFM is Bagi_Adam's protocol but they have the same fields
+        if msg.protocol == "CCSMB-5" or msg.protocol == "BagFM" then
           buffer = msg.buffer
           stationName = msg.station
 
