@@ -1,7 +1,7 @@
 local modem = peripheral.find("modem")
 local speaker = peripheral.find("speaker")
 local dfpwm = require("cc.audio.dfpwm")
-local version = 1.0
+local version = 1.1
 local args = {...}
 if args[1] and tonumber(args[1]) then
   print("Tuning to " .. tonumber(args[1]))
@@ -62,7 +62,7 @@ local function drawInfo()
     term.setCursorPos(1,1)
     term.setBackgroundColor(colors.cyan)
     term.clearLine()
-    print("mPlayer")
+    print("mPlayer " .. version)
     term.setBackgroundColor(colors.black)
     --print("Music playback might stutter, this is known")
     term.setCursorPos(1,4)
