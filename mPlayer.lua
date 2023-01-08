@@ -8,6 +8,26 @@ if args[1] and tonumber(args[1]) then
   modem.open(tonumber(args[1]))
 end
 
+local function update()
+    local s = shell.getRunningProgram()
+    handle = http.get("https://raw.githubusercontent.com/knijn/mPlayer/main/mPlayer.lua")
+    if not handle then
+        error("Could not download new version, Please update manually.",0)
+    else
+        data = handle.readAll()
+        local f = fs.open(s, "w")
+        handle.close()
+        f.write(data)
+        f.close()
+        error("Please reopen mStream")
+    end
+end
+
+local h = http.get("https://raw.githubusercontent.com/knijn/mPlayer/main/data.json")
+local latestVersion = textutils.unserialiseJSON(h.readAll()).latestVersion
+
+if latestVersion > version then update() end
+
 
 local decoder = dfpwm.make_decoder()
 local selection = 2048
