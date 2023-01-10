@@ -1,7 +1,7 @@
 local modem = peripheral.find("modem")
 local speaker = peripheral.find("speaker")
 local dfpwm = require("cc.audio.dfpwm")
-local version = 1.3
+local version = 1.4
 local args = {...}
 
 local function update()
@@ -86,7 +86,9 @@ local function drawInfo()
     elseif manualSelect then
       term.write("/ ")
       channel = read()
+      modem.close(selection)
       selection = tonumber(channel)
+      modem.open(selection)
       manualSelect = false
     else
       term.write("Channel " .. selection)
