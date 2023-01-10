@@ -1,12 +1,8 @@
 local modem = peripheral.find("modem")
 local speaker = peripheral.find("speaker")
 local dfpwm = require("cc.audio.dfpwm")
-local version = 1.2
+local version = 1.3
 local args = {...}
-if args[1] and tonumber(args[1]) then
-  print("Tuning to " .. tonumber(args[1]))
-  modem.open(tonumber(args[1]))
-end
 
 local function update()
     local s = shell.getRunningProgram()
@@ -35,6 +31,7 @@ local playing = false
 local song
 local channelName
 local signalType
+local manualSelect = false
 
 modem.closeAll()
 
@@ -49,6 +46,8 @@ local function handleInput()
       modem.close(selection)
       selection = selection - 1
       modem.open(selection)
+    elseif key == keys.slash then
+      manualSelect = true
     end
   end
 end
@@ -82,8 +81,13 @@ local function drawInfo()
 
 
     term.setCursorPos(1,ySize)
-    if signalType then
+    if signalType and not manualSelect then
       term.write("Channel " .. selection .. "   Signal Type: " .. signalType)
+    elseif manualSelect then
+      term.write("/ ")
+      channel = read()
+      selection = tonumber(channel)
+      manualSelect = false
     else
       term.write("Channel " .. selection)
     end
