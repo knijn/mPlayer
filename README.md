@@ -7,3 +7,4 @@ General Radio Player
 
 - Arrow up tunes a channel up
 - Arrow down tunes a channel down
+- Pressing / and typing a number will tune to that channel
