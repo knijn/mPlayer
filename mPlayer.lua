@@ -1,7 +1,7 @@
 local modem = peripheral.find("modem")
 local speaker = peripheral.find("speaker")
 local dfpwm = require("cc.audio.dfpwm")
-local version = 1.4
+local version = 1.5
 local args = {...}
 
 local function update()
