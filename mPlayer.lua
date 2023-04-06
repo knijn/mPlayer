@@ -1,7 +1,7 @@
 local modem = peripheral.find("modem")
 local speaker = peripheral.find("speaker")
 local dfpwm = require("cc.audio.dfpwm")
-local version = 1.4
+local version = 1.5
 local args = {...}
 
 local function update()
@@ -71,9 +71,16 @@ local function drawInfo()
       else
         term.write("PLAYING")
       end
-      if title then
+      if song then
         term.setCursorPos(1,6)
+        term.write(song)
+	  elseif title then
+		term.setCursorPos(1,6)
         term.write(title)
+      end
+	  if artist then
+        term.setCursorPos(1,7)
+        term.write(artist)
       end
     else
       term.write("NO SIGNAL")
@@ -118,13 +125,23 @@ local function play()
       if type(msg) == "string" then
         buffer = decoder(msg)
         signalType = "Classic"
-      else
+      elseif type(msg) == "table" and msg["song"] then
+	    local decoded = decoder(msg.song)
+		title = msg["songartist"].." - "..msg["songname"]
+		song = msg["songname"]
+		artist = msg["songartist"]
+		speaker.playAudio(decoded)
+		signalType = "Live Radio Protocol"
+	  else
         -- BagFM is Bagi_Adam's protocol but they have the same fields
         if msg.protocol == "CCSMB-5" or msg.protocol == "BagFM" then
           buffer = msg.buffer
           stationName = msg.station
-
-          title = msg.title
+		  title = msg.title
+		  if msg.protocol == "CCSMB-5" then
+			song = msg.metadata.song
+			artist = msg.metadata.artist
+		  end
           signalType = msg.protocol
           while not speaker.playAudio(buffer) do
             os.pullEvent("speaker_audio_empty")
