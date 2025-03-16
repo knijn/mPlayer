@@ -1,7 +1,7 @@
 local modem = peripheral.find("modem")
 local speaker = peripheral.find("speaker")
 local dfpwm = require("cc.audio.dfpwm")
-local version = 1.4
+local version = 1.5
 local args = {...}
 
 local function update()
@@ -63,7 +63,6 @@ local function drawInfo()
     term.clearLine()
     print("mPlayer " .. version)
     term.setBackgroundColor(colors.black)
-    --print("Music playback might stutter, this is known")
     term.setCursorPos(1,4)
     if playing then
       if stationName then
@@ -119,13 +118,15 @@ local function play()
         buffer = decoder(msg)
         signalType = "Classic"
       else
-        -- BagFM is Bagi_Adam's protocol but they have the same fields
-        if msg.protocol == "CCSMB-5" or msg.protocol == "BagFM" then
-          buffer = msg.buffer
+        if msg.protocol == "PASC" then
+          buffer = msg.buffer[1]
           stationName = msg.station
 
-          title = msg.title
+          title = msg.metadata.title
           signalType = msg.protocol
+
+
+
           while not speaker.playAudio(buffer) do
             os.pullEvent("speaker_audio_empty")
           end
