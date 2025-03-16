@@ -119,14 +119,15 @@ local function play()
         signalType = "Classic"
       else
         if msg.protocol == "PASC" then
-          buffer = msg.buffer[1]
+          buffer = {}
           stationName = msg.station
 
           title = msg.metadata.title
           signalType = msg.protocol
 
-
-
+          for i,o in pairs(msg.buffer[1]) do
+            buffer[i] = msg.buffer[1][i] / 2 + msg.buffer[2][i] / 2
+          end
           while not speaker.playAudio(buffer) do
             os.pullEvent("speaker_audio_empty")
           end
